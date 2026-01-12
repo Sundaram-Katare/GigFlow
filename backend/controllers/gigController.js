@@ -57,6 +57,31 @@ const getAllGigsOfSingleUser = async (req, res) => {
     } catch (error) {
         return res.status(500).json({ message: "Error fetching gigs of a user ", error: error.message });
     }
+};
+
+const updateStatusOfGig = async (req, res) => {
+    try {
+        const gigId = req.params.id;
+        console.log(gigId);
+        const { status } = req.body;
+
+        if (!status) {
+            return res.status(400).json({ message: "Status is required" });
+        }
+
+        const updatedGig = await Gig.findByIdAndUpdate(gigId, { status }, { new: true });
+
+        if (!updatedGig) {
+            return res.status(404).json({ message: "Gig not found" });
+        }
+
+        return res.status(200).json({
+            message: "Gig status updated successfully",
+            gig: updatedGig
+        });
+    } catch (error) {
+        return res.status(500).json({ message: "Error updating status", error: error.message });
+    }
 }
 
-module.exports = { createGig, getAllGigs, getAllGigsOfSingleUser };
+module.exports = { createGig, getAllGigs, getAllGigsOfSingleUser, updateStatusOfGig };
