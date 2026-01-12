@@ -1,4 +1,5 @@
 const Gig = require('../models/gigModel');
+const User = require('../models/userModel');
 
 const createGig = async(req, res) => {
     try {
@@ -11,6 +12,8 @@ const createGig = async(req, res) => {
 
        const newGig = await Gig.create({ userId, title, description, budget });
        newGig.save();
+
+       const user = await User.findByIdAndUpdate(userId, { $push: { gigs: newGig._id } }, { new: true });                       
 
        return res.status(200).json({
         message: "Gig Added Successfully",
