@@ -41,6 +41,22 @@ const getAllGigs = async (req, res) => {
     } catch (error) {
         return res.status(500).json({message: "Error fetching gigs", error: error.message});
     }
+};
+
+const getAllGigsOfSingleUser = async (req, res) => {
+    try {
+      const userId = req.userId;
+
+      const gigs = await Gig.find({ userId });
+
+      return res.status(200).json({
+        message: "Successfully fetched Gigs of a User",
+        gigs
+      });
+
+    } catch (error) {
+        return res.status(500).json({ message: "Error fetching gigs of a user ", error: error.message });
+    }
 }
 
-module.exports = { createGig, getAllGigs};
+module.exports = { createGig, getAllGigs, getAllGigsOfSingleUser };
