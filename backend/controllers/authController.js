@@ -47,5 +47,49 @@ const register = async (req, res) => {
     }
 };
 
+const login = async (req, res) => {
+    try {
+        const { email, password } = req.body;
 
-module.exports = register;
+        if (!email || !password) {
+            return res.status(400).json({ message: "Both fields are required" });
+        }
+
+        const userExist = await User.findOne({ email });
+        if (!userExist) {
+            return res.status(400).json({ message: 'Invalid Credentials' });
+        }
+
+        const isPasswordCorrect = await bcrypt.compare(password, userExist.password);
+        if (!isPasswordCorrect) {
+            return res.status(400).json({ message: 'Invalid Credentials' });
+        }
+
+        const token = await generateToken(userExist._id);
+
+        userExist.token = token;
+        await userExist.save();
+
+        res.cookie('token', token, {
+            httpOnly: true,
+            secure: process.env.NODE_ENV === 'production',
+            sameSite: 'strict',
+            maxAge: 7 * 24 * 60 * 60 * 1000,
+        });
+
+        return res.status(200).json({
+            message: 'Login successful',
+            user: {
+                id: userExist._id,
+                name: userExist.name,
+                email: userExist.email,
+                role: userExist.role,
+                token: userExist.token,
+            }
+        });
+    } catch (error) {
+        return res.status(500).json({ message: "Server error", error: error.message });
+    }
+};
+
+module.exports = { register, login };
