@@ -30,4 +30,17 @@ const createGig = async(req, res) => {
     }
 };
 
-module.exports = createGig;
+const getAllGigs = async (req, res) => {
+    try {  
+      const gigs = await Gig.find();
+
+      return res.status(200).json({
+        message: "Fetched all gigs successfully",
+        gigs
+      });
+    } catch (error) {
+        return res.status(500).json({message: "Error fetching gigs", error: error.message});
+    }
+}
+
+module.exports = { createGig, getAllGigs};
