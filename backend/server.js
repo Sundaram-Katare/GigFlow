@@ -5,6 +5,7 @@ const dotenv = require('dotenv');
 const authRoutes = require('./routes/authRoutes');
 const userRoutes = require('./routes/userRoutes');
 const gigRoutes = require('./routes/gigRoutes');
+const bidRoutes = require('./routes/bidRoutes');
 
 dotenv.config();
 
@@ -20,6 +21,7 @@ app.use(express.json());
 app.use('/api/auth', authRoutes);
 app.use('/api/user', userRoutes);
 app.use('/api/gig', gigRoutes);
+app.use('/api/bid', bidRoutes);
 
 app.get('/', (req, res) => {
     res.send('Hello from the backend server');
