@@ -28,4 +28,21 @@ const createBid = async (req, res) => {
     }
 };
 
-module.exports = { createBid };
+const updatedBidStatus = async (req, res) => {
+    try {
+       const { bidId } = req.body;
+
+       const bid = await Bid.findByIdAndUpdate(bidId, { status: 'hired'}, { new: true });
+       const rejectedBids = await Bid.updateMany({ gigId: bid.gigId, _id: { $ne: bidId } }, { status: 'rejected' });
+
+       return re.status(200).json({
+        message: "Bids Updated Successfully",
+        bid,
+       });
+
+    } catch (error) {
+        return re.status(500).json({ message: "Error updating Bid ", error: error.message });
+    }
+}
+
+module.exports = { createBid, updatedBidStatus };

@@ -87,4 +87,22 @@ const updateStatusOfGig = async (req, res) => {
     }
 }
 
-module.exports = { createGig, getAllGigs, getAllGigsOfSingleUser, updateStatusOfGig };
+const getAllBidsOfGig = async (req, res) => {
+    try {
+      const userId = req.userId;
+
+      const { gigId } = req.body;
+
+      const bids = await Gig.findById(gigId).populate('bids');
+
+      return res.status(200).json({
+        message: "Fetched All bids on this gig successfully",
+        bids 
+      });
+
+    } catch (error) {
+        return res.status(500).json({ message: "Error fetching bids of this gig", error: error.message });
+    }
+}
+
+module.exports = { createGig, getAllGigs, getAllGigsOfSingleUser, updateStatusOfGig, getAllBidsOfGig };
