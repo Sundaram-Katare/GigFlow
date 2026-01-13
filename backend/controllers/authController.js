@@ -20,10 +20,10 @@ const register = async (req, res) => {
 
         const hashedPassword = await bcrypt.hash(password, 10);
 
-        const token = await generateToken();
-
-        const newUser = await User.create({ name, email, password: hashedPassword, role, token: token });
-        newUser.save();
+        const newUser = await User.create({ name, email, password: hashedPassword, role });
+        const token = await generateToken(newUser._id);
+        newUser.token = token;
+        await newUser.save();
 
         res.cookie('token', token, {
             httpOnly: true,
@@ -92,4 +92,13 @@ const login = async (req, res) => {
     }
 };
 
-module.exports = { register, login };
+const logout = async (req, res) => {
+    try {
+        res.clearCookie('token');
+        return res.status(200).json({ message: 'Logged out successfully' });
+    } catch (error) {
+        return res.status(500).json({ message: "Server error", error: error.message });
+    }
+};
+
+module.exports = { register, login, logout };

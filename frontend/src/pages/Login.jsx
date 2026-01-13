@@ -2,9 +2,11 @@ import { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { login, resetAuthState } from "../features/auth/authSlice";
 import Navbar from "../components/Navbar";
+import { useNavigate } from "react-router";
 
 export default function Login() {
   const dispatch = useDispatch();
+  const navigate = useNavigate();
   const { user, loading, error, success } = useSelector((state) => state.auth);
 
   const [formData, setFormData] = useState({
@@ -22,6 +24,7 @@ export default function Login() {
   const handleSubmit = (e) => {
     e.preventDefault();
     dispatch(login(formData));
+    navigate("/");
   };
 
   return (

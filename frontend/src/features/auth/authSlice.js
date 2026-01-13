@@ -1,6 +1,6 @@
 // src/features/auth/authSlice.js
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
-import { registerUser, loginUser } from './authAPI.js';
+import { registerUser, loginUser, logoutUser, getProfile } from './authAPI.js';
 
 // Async thunks
 export const register = createAsyncThunk(
@@ -29,7 +29,18 @@ export const logout = createAsyncThunk(
   'auth/logout',
   async (_, { rejectWithValue }) => {
     try {
-      return awai();
+      return await logoutUser();
+    } catch (err) {
+      return rejectWithValue(err.response.data);
+    }
+  }
+);
+
+export const fetchProfile = createAsyncThunk(
+  'auth/fetchProfile',
+  async (_, { rejectWithValue }) => {
+    try {
+      return await getProfile();
     } catch (err) {
       return rejectWithValue(err.response.data);
     }
@@ -39,6 +50,7 @@ export const logout = createAsyncThunk(
 // Initial state
 const initialState = {
   user: null,
+  profile: null,
   loading: false,
   error: null,
   success: false,
@@ -82,12 +94,26 @@ const authSlice = createSlice({
       .addCase(login.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload.message;
+      })
+      // Logout
+      .addCase(logout.fulfilled, (state) => {
+        state.user = null;
+        state.profile = null;
+        state.success = false;
+        state.error = null;
+      })
+      // Fetch Profile
+      .addCase(fetchProfile.pending, (state) => {
+        state.loading = true;
+      })
+      .addCase(fetchProfile.fulfilled, (state, action) => {
+        state.loading = false;
+        state.profile = action.payload.user;
+      })
+      .addCase(fetchProfile.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload.message;
       });
-    //   // Logout
-    //   .addCase(logout.fulfilled, (state) => {
-    //     state.user = null;
-    //     state.success = true;
-    //   });
   },
 });
 
