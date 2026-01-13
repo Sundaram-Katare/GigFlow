@@ -23,7 +23,7 @@ export const logoutUser = async () => {
 };
 
 export const getProfile = async () => {
-    const res = await axios.get('http://localhost:5000/api/user/profile', {
+    const res = await axios.get('https://gigflow-1-l00h.onrender.com/api/user/profile', {
         withCredentials: true,
     });
     return res.data;
