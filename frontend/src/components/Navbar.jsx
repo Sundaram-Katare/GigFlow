@@ -28,7 +28,7 @@ export default function Navbar() {
         </div>
 
         <div className="flex justify-center items-center">
-          <h2 className="text-white font-regular text-3xl"
+          <h2 className="text-white font-regular cursor-pointer text-3xl"
               onClick={() => navigate("/jobs")}
           >Jobs</h2>
         </div>
