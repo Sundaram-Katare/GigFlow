@@ -10,13 +10,11 @@ export const getAllGigs = async () => {
   return response.data;
 };
 
-// Get gigs of a single user
 export const getUserGigs = async () => {
   const response = await axiosInstance.get('/gig/getAllGigsOfSingleUser');
   return response.data;
 };
 
-// Update gig status
 export const updateGigStatus = async (gigId, status) => {
   const response = await axiosInstance.put(
     `/gig/updateStatus/${gigId}`,
@@ -25,7 +23,6 @@ export const updateGigStatus = async (gigId, status) => {
   return response.data;
 };
 
-// Get all bids of a gig
 export const getAllBidsOfGig = async (gigId) => {
   const response = await axiosInstance.get('/gig/getAllBids', {
     params: { gigId },

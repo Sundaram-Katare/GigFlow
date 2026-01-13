@@ -19,7 +19,6 @@ connectDB();
 
 const PORT = process.env.PORT || 5000;
 
-// Determine allowed origins based on environment
 const allowedOrigins = process.env.NODE_ENV === 'production' 
   ? [process.env.FRONTEND_URL || 'https://gig-flow-pied.vercel.app']
   : ['http://localhost:5173', 'http://localhost:3000'];

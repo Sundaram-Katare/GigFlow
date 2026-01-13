@@ -7,16 +7,14 @@ const initSocket = (io) => {
   io.on('connection', (socket) => {
     console.log('New socket connection:', socket.id);
 
-    // User joins their personal room
     socket.on('join', (userId) => {
       if (!userId) return;
       
       userSockets[userId] = socket.id;
-      socket.join(userId); // Join a room with their user ID
+      socket.join(userId); 
       console.log(`User ${userId} joined with socket ${socket.id}`);
     });
 
-    // Handle disconnect
     socket.on('disconnect', () => {
       for (let userId in userSockets) {
         if (userSockets[userId] === socket.id) {
@@ -27,18 +25,13 @@ const initSocket = (io) => {
       }
     });
 
-    // Error handling
     socket.on('error', (error) => {
       console.error('Socket error:', error);
     });
   });
 };
 
-/**
- * Emit hire notification to a specific user
- * @param {string} userId - The recipient user ID
- * @param {object} notificationData - Data to send
- */
+
 const emitHiredNotification = (userId, notificationData) => {
   if (!ioInstance) {
     console.warn('Socket.io instance not initialized');
@@ -60,11 +53,7 @@ const emitHiredNotification = (userId, notificationData) => {
   return true;
 };
 
-/**
- * Emit notification to the gig owner when their gig is assigned
- * @param {string} userId - The gig owner's user ID
- * @param {object} notificationData - Data to send
- */
+
 const emitAssignedNotification = (userId, notificationData) => {
   if (!ioInstance) {
     console.warn('Socket.io instance not initialized');
@@ -86,11 +75,7 @@ const emitAssignedNotification = (userId, notificationData) => {
   return true;
 };
 
-/**
- * Emit rejection notification to a freelancer
- * @param {string} userId - The rejected freelancer's user ID
- * @param {object} notificationData - Data to send
- */
+
 const emitRejectionNotification = (userId, notificationData) => {
   if (!ioInstance) {
     console.warn('Socket.io instance not initialized');
@@ -112,9 +97,7 @@ const emitRejectionNotification = (userId, notificationData) => {
   return true;
 };
 
-/**
- * Get all connected users
- */
+
 const getConnectedUsers = () => {
   return Object.keys(userSockets);
 };

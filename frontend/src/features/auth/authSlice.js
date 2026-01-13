@@ -1,8 +1,7 @@
-// src/features/auth/authSlice.js
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import { registerUser, loginUser, logoutUser, getProfile } from './authAPI.js';
 
-// Async thunks
+
 export const register = createAsyncThunk(
   'auth/register',
   async (userData, { rejectWithValue }) => {
@@ -47,7 +46,7 @@ export const fetchProfile = createAsyncThunk(
   }
 );
 
-// Initial state
+
 const initialState = {
   user: null,
   profile: null,
