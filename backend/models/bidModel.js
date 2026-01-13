@@ -6,6 +6,7 @@ const bidSchema = new mongoose.Schema({
     message: { type: String, required: true },
     price: { type: Number, required: true },
     status: { type: String, enum: ['pending', 'hired', 'rejected'], default: 'pending' },
+    hiredAt: { type: Date, default: null }, // Track when hired
 }, { collection: 'bid'}, { timestamps: true });
 
 module.exports = mongoose.model('Bid', bidSchema);

@@ -3,6 +3,7 @@ import { useSelector, useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { logout, fetchProfile } from "../features/auth/authSlice";
 import socket from "../socket";
+import NotificationCenter from "./NotificationCenter";
 
 export default function Navbar() {
   const { user, profile, loading } = useSelector((state) => state.auth);
@@ -33,6 +34,7 @@ export default function Navbar() {
         </div>
 
         <div className="flex justify-center items-center gap-4">
+          {user && <NotificationCenter />}
           {user ? (
             <>
               <button

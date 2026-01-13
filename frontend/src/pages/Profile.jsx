@@ -28,16 +28,10 @@ export default function Profile() {
   }, [user, profile, dispatch]);
 
   useEffect(() => {
-    if (user) {
-      socket.emit('join', user.id);
-      socket.on('hiredNotification', (message) => {
-        toast.success(message);
-      });
-    }
-    return () => {
-      socket.off('hiredNotification');
-    };
-  }, [user]);
+  if (user) {
+    socket.emit('join', user.id);
+  }
+}, [user]);
 
   const handleHire = (bidId) => {
     dispatch(hireBidAction(bidId)).then(() => {
