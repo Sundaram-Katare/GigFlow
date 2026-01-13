@@ -151,3 +151,9 @@ GIGFLOW/
 ```bash
   node server.js
 ```  
+
+# Future Improvements
+- Add a chatbot feature so that client and freelancer can communicate with each other to discuss about the deal.
+- Points based rankings or gamification of the platform.
+- More filters for the gigs based on price, category, date posted, etc.
+- 
