@@ -1,45 +1,34 @@
-import axios from "axios";
-
-const API_URL = import.meta.env.VITE_API_URL + '/gig';
+import axiosInstance from "../../utils/axiosInstance.js";
 
 export const createGig = async (gigData) => {
-  const response = await axios.post(`${API_URL}/addGig`, gigData, {
-    withCredentials: true,
-  });
+  const response = await axiosInstance.post('/gig/addGig', gigData);
   return response.data;
 };
 
-
 export const getAllGigs = async () => {
-  const response = await axios.get(`${API_URL}/getAllGigs`, {
-    withCredentials: true,
-  });
+  const response = await axiosInstance.get('/gig/getAllGigs');
   return response.data;
 };
 
 // Get gigs of a single user
 export const getUserGigs = async () => {
-  const response = await axios.get(`${API_URL}/getAllGigsOfSingleUser`, {
-    withCredentials: true,
-  });
+  const response = await axiosInstance.get('/gig/getAllGigsOfSingleUser');
   return response.data;
 };
 
 // Update gig status
 export const updateGigStatus = async (gigId, status) => {
-  const response = await axios.put(
-    `${API_URL}/updateStatus/${gigId}`,
-    { status },
-    { withCredentials: true }
+  const response = await axiosInstance.put(
+    `/gig/updateStatus/${gigId}`,
+    { status }
   );
   return response.data;
 };
 
 // Get all bids of a gig
 export const getAllBidsOfGig = async (gigId) => {
-  const response = await axios.get(`${API_URL}/getAllBids`, {
+  const response = await axiosInstance.get('/gig/getAllBids', {
     params: { gigId },
-    withCredentials: true,
   });
   return response.data;
 };
