@@ -1,6 +1,7 @@
 const Bid = require('../models/bidModel');
 const Gig = require('../models/gigModel');
 const User = require('../models/userModel');
+const { emitHiredNotification } = require('../socket');
 
 const createBid = async (req, res) => {
     try {
@@ -12,16 +13,16 @@ const createBid = async (req, res) => {
         return res.status(400).json({ message: "All fields are required" });
       }
 
-       const newBid = await Bid.create({ userId, gigId, message, price });
-       newBid.save();
+      const newBid = await Bid.create({ userId, gigId, message, price });
+      newBid.save();
 
-       const gig = await Gig.findByIdAndUpdate(gigId, { $push: { bids: newBid._id } }, { new: true });
-       const user = await User.findByIdAndUpdate(userId, { $push: { bids: newBid._id } }, { new: true });                       
+      const gig = await Gig.findByIdAndUpdate(gigId, { $push: { bids: newBid._id } }, { new: true });
+      const user = await User.findByIdAndUpdate(userId, { $push: { bids: newBid._id } }, { new: true });                       
 
-       return res.status(200).json({
+      return res.status(200).json({
         message: "Bid Created Successfully",
         bid: newBid
-       });
+      });
 
     } catch (error) {
         return res.status(500).json({ message: "Error creating bid", error: error.message });
@@ -58,6 +59,8 @@ const hireBid = async (req, res) => {
         await Bid.updateMany({ gigId: bid.gigId._id, _id: { $ne: bidId } }, { status: 'rejected' });
         // Update gig to assigned
         await Gig.findByIdAndUpdate(bid.gigId._id, { status: 'assigned' });
+        // Emit notification to the freelancer
+        emitHiredNotification(bid.userId.toString(), `You have been hired for ${bid.gigId.title}!`);
         return res.status(200).json({ message: 'Hired successfully' });
     } catch (error) {
         return res.status(500).json({ message: "Error hiring bid", error: error.message });

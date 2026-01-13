@@ -14,6 +14,8 @@ import {
   ChevronUp,
   CheckCircle
 } from "lucide-react";
+import toast, { Toaster } from "react-hot-toast";
+import socket from "../socket";
 
 export default function Profile() {
   const dispatch = useDispatch();
@@ -25,8 +27,23 @@ export default function Profile() {
     if (user && !profile) dispatch(fetchProfile());
   }, [user, profile, dispatch]);
 
+  useEffect(() => {
+    if (user) {
+      socket.emit('join', user.id);
+      socket.on('hiredNotification', (message) => {
+        toast.success(message);
+      });
+    }
+    return () => {
+      socket.off('hiredNotification');
+    };
+  }, [user]);
+
   const handleHire = (bidId) => {
-    dispatch(hireBidAction(bidId)).then(() => dispatch(fetchProfile()));
+    dispatch(hireBidAction(bidId)).then(() => {
+      toast.success("Hired successfully!");
+      dispatch(fetchProfile());
+    });
   };
 
   if (!user || loading) {
@@ -172,6 +189,7 @@ export default function Profile() {
           )}
         </div>
       </div>
+      <Toaster position="top-right" />
     </div>
   );
 }

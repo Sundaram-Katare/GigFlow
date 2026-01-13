@@ -8,6 +8,7 @@ import Navbar from "../components/Navbar";
 import BidModal from "../components/BidModal";
 import AddGigModal from "../components/AddGigModal";
 import toast, { Toaster } from "react-hot-toast";
+import socket from "../socket";
 
 export default function Jobs() {
   const dispatch = useDispatch();
@@ -22,6 +23,18 @@ export default function Jobs() {
     dispatch(fetchAllGigs());
     dispatch(fetchProfile());
   }, [dispatch]);
+
+  useEffect(() => {
+    if (user) {
+      socket.emit('join', user.id);
+      socket.on('hiredNotification', (message) => {
+        toast.success(message);
+      });
+    }
+    return () => {
+      socket.off('hiredNotification');
+    };
+  }, [user]);
 
   const filteredGigs = gigs?.filter((gig) =>
     gig.title.toLowerCase().includes(searchTerm.toLowerCase())
