@@ -21,7 +21,7 @@ const PORT = process.env.PORT || 5000;
 
 app.use(cors({
   origin: ['http://localhost:5173',
-           `https://gig-flow-pied.vercel.app/`
+           `https://gig-flow-pied.vercel.app`
   ], // your frontend origin
   credentials: true,               // allow cookies to be sent
 }));
@@ -41,7 +41,7 @@ const server = http.createServer(app);
 const io = new Server(server, {
   cors: {
     origin: ['http://localhost:5173',
-             'https://gig-flow-pied.vercel.app/' 
+             'https://gig-flow-pied.vercel.app' 
     ],
 
     credentials: true,
