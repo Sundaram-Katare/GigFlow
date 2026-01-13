@@ -56,7 +56,8 @@ GIGFLOW/
 │   │   ├── features/
 │   │   │   ├── auth/
 │   │   │   └── bid/
-│   │   │
+│   │   │   └── gig/
+|   |   |   └── notification/
 │   │   ├── layout/
 │   │   ├── pages/
 │   │   ├── store/
