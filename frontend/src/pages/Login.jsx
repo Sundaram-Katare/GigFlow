@@ -92,9 +92,9 @@ export default function Login() {
 
                 <p className="text-sm text-white text-center mt-3">
                   Don't have an account?{" "}
-                  <a href="/signup" className="text-yellow-400 font-semibold">
+                  <p onClick={() => navigate("/signup")} className="text-yellow-400 font-semibold">
                     Signup
-                  </a>
+                  </p>
                 </p>
               </form>
             </div>
