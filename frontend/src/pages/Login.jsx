@@ -23,8 +23,8 @@ export default function Login() {
 
   const handleSubmit = (e) => {
     e.preventDefault();
+    navigate("/profile");
     dispatch(login(formData));
-    navigate("/");
   };
 
   return (
@@ -34,7 +34,7 @@ export default function Login() {
 
         <div className="flex flex-1 items-center justify-center">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-10 w-full max-w-5xl bg-white/10 backdrop-blur-md rounded-xl shadow-lg p-6 sm:p-10">
-            
+
             {/* Left side: form */}
             <div className="flex flex-col justify-center">
               <h2 className="text-3xl font-bold text-white mb-6">

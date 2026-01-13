@@ -35,14 +35,33 @@ const updatedBidStatus = async (req, res) => {
        const bid = await Bid.findByIdAndUpdate(bidId, { status: 'hired'}, { new: true });
        const rejectedBids = await Bid.updateMany({ gigId: bid.gigId, _id: { $ne: bidId } }, { status: 'rejected' });
 
-       return re.status(200).json({
+       return res.status(200).json({
         message: "Bids Updated Successfully",
         bid,
        });
 
     } catch (error) {
-        return re.status(500).json({ message: "Error updating Bid ", error: error.message });
+        return res.status(500).json({ message: "Error updating Bid ", error: error.message });
     }
 }
 
-module.exports = { createBid, updatedBidStatus };
+const hireBid = async (req, res) => {
+    try {
+        const { bidId } = req.body;
+        const bid = await Bid.findById(bidId).populate('gigId');
+        if (!bid) {
+            return res.status(404).json({ message: 'Bid not found' });
+        }
+        // Update this bid to hired
+        await Bid.findByIdAndUpdate(bidId, { status: 'hired' });
+        // Update others to rejected
+        await Bid.updateMany({ gigId: bid.gigId._id, _id: { $ne: bidId } }, { status: 'rejected' });
+        // Update gig to assigned
+        await Gig.findByIdAndUpdate(bid.gigId._id, { status: 'assigned' });
+        return res.status(200).json({ message: 'Hired successfully' });
+    } catch (error) {
+        return res.status(500).json({ message: "Error hiring bid", error: error.message });
+    }
+}
+
+module.exports = { createBid, updatedBidStatus, hireBid };
