@@ -1,10 +1,12 @@
 import { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
+import { useNavigate } from "react-router";
 import { register, resetAuthState } from "../features/auth/authSlice";
 import Navbar from "../components/Navbar";
 
 export default function Signup() {
   const dispatch = useDispatch();
+  const navigate = useNavigate();
   const { user, loading, error, success } = useSelector((state) => state.auth);
 
   const [formData, setFormData] = useState({
@@ -103,9 +105,9 @@ export default function Signup() {
 
                 <p className="text-sm text-white text-center mt-3">
                   Already have an account?{" "}
-                  <a href="/login" className="text-yellow-400 font-semibold">
+                  <p onClick={() => navigate("/login")} className="cursor-pointer text-yellow-400 font-semibold">
                     Login
-                  </a>
+                  </p>
                 </p>
               </form>
             </div>

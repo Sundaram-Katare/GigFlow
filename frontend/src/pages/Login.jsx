@@ -92,7 +92,7 @@ export default function Login() {
 
                 <p className="text-sm text-white text-center mt-3">
                   Don't have an account?{" "}
-                  <p onClick={() => navigate("/signup")} className="text-yellow-400 font-semibold">
+                  <p onClick={() => navigate("/signup")} className="cursor-pointer text-yellow-400 font-semibold">
                     Signup
                   </p>
                 </p>
