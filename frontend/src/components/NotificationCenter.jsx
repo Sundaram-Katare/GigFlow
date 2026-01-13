@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { Bell, X, CheckCircle, AlertCircle } from 'lucide-react';
+import { Bell, X, CheckCircle, AlertCircle, XCircle } from 'lucide-react';
 import { 
   addNotification, 
   removeNotification, 
@@ -8,6 +8,7 @@ import {
   markAllAsRead 
 } from '../features/notification/notificationSlice';
 import socket from '../socket';
+import toast from 'react-hot-toast';
 
 export default function NotificationCenter() {
   const dispatch = useDispatch();
@@ -15,7 +16,7 @@ export default function NotificationCenter() {
   const [isOpen, setIsOpen] = useState(false);
 
   useEffect(() => {
-    // Listen for hire notifications
+    // Listen for hire notifications (freelancer got hired)
     socket.on('hiredNotification', (notification) => {
       dispatch(addNotification({
         type: 'HIRE',
@@ -24,9 +25,13 @@ export default function NotificationCenter() {
         bidId: notification.bidId,
         gigId: notification.gigId,
       }));
+      toast.success(notification.message, {
+        duration: 5000,
+        position: 'top-right',
+      });
     });
 
-    // Listen for assignment notifications
+    // Listen for assignment notifications (client hired someone)
     socket.on('assignedNotification', (notification) => {
       dispatch(addNotification({
         type: 'ASSIGNED',
@@ -36,11 +41,32 @@ export default function NotificationCenter() {
         bidId: notification.bidId,
         gigId: notification.gigId,
       }));
+      toast.success(notification.message, {
+        duration: 5000,
+        position: 'top-right',
+      });
+    });
+
+    // Listen for rejection notifications (bid was rejected)
+    socket.on('rejectionNotification', (notification) => {
+      dispatch(addNotification({
+        type: 'REJECTION',
+        message: notification.message,
+        projectName: notification.projectName,
+        hiredFreelancerName: notification.hiredFreelancerName,
+        bidId: notification.bidId,
+        gigId: notification.gigId,
+      }));
+      toast.error(notification.message, {
+        duration: 5000,
+        position: 'top-right',
+      });
     });
 
     return () => {
       socket.off('hiredNotification');
       socket.off('assignedNotification');
+      socket.off('rejectionNotification');
     };
   }, [dispatch]);
 
@@ -50,6 +76,32 @@ export default function NotificationCenter() {
 
   const handleNotificationClick = (id) => {
     dispatch(markAsRead(id));
+  };
+
+  const getNotificationIcon = (type) => {
+    switch (type) {
+      case 'HIRE':
+        return <CheckCircle size={20} className="text-green-600 flex-shrink-0 mt-1" />;
+      case 'ASSIGNED':
+        return <AlertCircle size={20} className="text-blue-600 flex-shrink-0 mt-1" />;
+      case 'REJECTION':
+        return <XCircle size={20} className="text-red-600 flex-shrink-0 mt-1" />;
+      default:
+        return <Bell size={20} className="text-gray-600 flex-shrink-0 mt-1" />;
+    }
+  };
+
+  const getNotificationBgColor = (type) => {
+    switch (type) {
+      case 'HIRE':
+        return 'bg-green-50';
+      case 'ASSIGNED':
+        return 'bg-blue-50';
+      case 'REJECTION':
+        return 'bg-red-50';
+      default:
+        return 'bg-gray-50';
+    }
   };
 
   return (
@@ -69,7 +121,7 @@ export default function NotificationCenter() {
 
       {/* Notification Dropdown */}
       {isOpen && (
-        <div className="absolute right-0 mt-2 w-80 bg-white rounded-lg shadow-2xl z-50 max-h-96 overflow-y-auto">
+        <div className="absolute right-0 mt-2 w-96 bg-white rounded-lg shadow-2xl z-50 max-h-96 overflow-y-auto">
           <div className="sticky top-0 bg-gradient-to-r from-[#006d5b] to-[#a8f0c2] p-4 flex justify-between items-center">
             <h3 className="text-white font-bold text-lg">Notifications</h3>
             {unreadCount > 0 && (
@@ -93,16 +145,12 @@ export default function NotificationCenter() {
                 <div
                   key={notification.id}
                   onClick={() => handleNotificationClick(notification.id)}
-                  className={`p-4 hover:bg-gray-50 transition cursor-pointer ${
-                    !notification.read ? 'bg-blue-50' : ''
-                  }`}
+                  className={`p-4 hover:bg-gray-100 transition cursor-pointer border-l-4 ${
+                    !notification.read ? 'border-l-blue-500 bg-blue-50' : 'border-l-gray-200'
+                  } ${getNotificationBgColor(notification.type)}`}
                 >
                   <div className="flex items-start gap-3">
-                    {notification.type === 'HIRE' ? (
-                      <CheckCircle size={20} className="text-green-600 flex-shrink-0 mt-1" />
-                    ) : (
-                      <AlertCircle size={20} className="text-blue-600 flex-shrink-0 mt-1" />
-                    )}
+                    {getNotificationIcon(notification.type)}
                     <div className="flex-1 min-w-0">
                       <p className="font-semibold text-gray-900 text-sm">
                         {notification.message}

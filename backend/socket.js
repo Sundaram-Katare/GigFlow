@@ -47,14 +47,14 @@ const emitHiredNotification = (userId, notificationData) => {
 
   const notification = {
     type: 'HIRE_NOTIFICATION',
-    message: notificationData.message || notificationData,
+    message: notificationData.message,
     projectName: notificationData.projectName,
     bidId: notificationData.bidId,
     gigId: notificationData.gigId,
+    freelancerName: notificationData.freelancerName,
     timestamp: new Date().toISOString(),
   };
 
-  // Emit to the user's room
   ioInstance.to(userId).emit('hiredNotification', notification);
   console.log(`Hire notification sent to user ${userId}`);
   return true;
@@ -87,6 +87,32 @@ const emitAssignedNotification = (userId, notificationData) => {
 };
 
 /**
+ * Emit rejection notification to a freelancer
+ * @param {string} userId - The rejected freelancer's user ID
+ * @param {object} notificationData - Data to send
+ */
+const emitRejectionNotification = (userId, notificationData) => {
+  if (!ioInstance) {
+    console.warn('Socket.io instance not initialized');
+    return false;
+  }
+
+  const notification = {
+    type: 'REJECTION_NOTIFICATION',
+    message: notificationData.message,
+    projectName: notificationData.projectName,
+    bidId: notificationData.bidId,
+    gigId: notificationData.gigId,
+    hiredFreelancerName: notificationData.hiredFreelancerName,
+    timestamp: new Date().toISOString(),
+  };
+
+  ioInstance.to(userId).emit('rejectionNotification', notification);
+  console.log(`Rejection notification sent to user ${userId}`);
+  return true;
+};
+
+/**
  * Get all connected users
  */
 const getConnectedUsers = () => {
@@ -97,6 +123,7 @@ module.exports = {
   initSocket, 
   emitHiredNotification, 
   emitAssignedNotification,
+  emitRejectionNotification,
   userSockets,
   getConnectedUsers 
 };
